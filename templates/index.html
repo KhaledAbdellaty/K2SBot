@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot Interface</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/styles/main.css" />
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/static/js/main.js" defer></script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <!-- <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+      <div class="container-fluid">
+        <a href="#" class="navbar-brand">logo</a>
+        <button
+          class="navbar-toggler"
+          data-toggle="collapse"
+          data-taregt="#navbarResponsive"
+          type="button"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav> -->
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <h4>Upload PDF</h4>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <input
+          type="file"
+          id="pdfInput"
+          accept="application/pdf"
+          class="form-control"
+        />
+        <button type="submit" class="btn btn-primary mt-2">Upload</button>
+      </form>
+      <hr />
+      <h4>Documents</h4>
+      <ul id="documentList" class="list-group">
+        <!-- Messages will be dynamically added here -->
+      </ul>
+    </div>
+
+    <!-- Chat screen -->
+    <div class="chat-container">
+      <div class="chat-messages" id="chatMessages">
+        <!-- Chat messages will be dynamically added here -->
+      </div>
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+  </body>
+</html>

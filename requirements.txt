@@ -1,0 +1,11 @@
+flask
+pypdf2
+langchain-community
+python-dotenv
+huggingface_hub
+Flask-Session
+InstructorEmbedding
+faiss-cpu
+sentence-transformers===2.2.2
+torch===2.2.0
+langchain-huggingface #for llm 
