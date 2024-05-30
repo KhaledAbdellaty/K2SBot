@@ -6,13 +6,12 @@ import os
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceInstructEmbeddings
-# from langchain_community.llms import HuggingFaceEndpoint
-from langchain_huggingface.llms import HuggingFaceEndpoint
+from langchain_community.vectorstores.faiss import FAISS
+from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-import uuid
+from transformers import pipeline
 
 app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -61,13 +60,20 @@ def make_vectore_store(chunks):
     return vector
 
 def get_conversation(vector):
-    
-    llm = HuggingFaceEndpoint(repo_id="google/flan-t5-xxl", temperature=0.5,model_kwargs={"max_length": 200})
-    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True)
-    conversation = ConversationalRetrievalChain.from_llm(
-        llm=llm,
-        retriever=vector.as_retriever(),
-        memory=memory
+    hf_model_id = "google/flan-t5-xxl"
+    hf_endpoint_url = f"https://api-inference.huggingface.co/models/{hf_model_id}"
+    llm = HuggingFaceEndpoint(
+        task="text2text-generation",
+        endpoint_url=hf_endpoint_url,
+    )
+    # llm = pipeline('text-generation', model='gpt2')
+    memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True
+                                      ,model_kwargs={"max_new_tokens": 200}, top_k=3)
+    conversation =  ConversationalRetrievalChain.from_llm(
+    llm=llm,
+    memory=memory,
+    retriever=vector.as_retriever(), 
+    # return_source_documents=True
     )
     return conversation
 
@@ -90,10 +96,11 @@ def upload_file():
         pdf_text = extract_text_from_pdf(file)
         chunks = get_text_chuncks(pdf_text)
         vector = make_vectore_store(chunks)
+        global conversation 
         conversation = get_conversation(vector)
-        session_id = str(uuid.uuid4())
-        session['session_id'] = session_id
-        conversation_store[session_id] = conversation
+        # session_id = str(uuid.uuid4())
+        # session['session_id'] = session_id
+        # conversation_store[session_id] = conversation
 
         return jsonify({'success': 'File uploaded successfully'}), 200
     else:
@@ -102,12 +109,13 @@ def upload_file():
 
 @app.route('/ask', methods=['POST'])
 def ask_question():
-    session_id = session.get('session_id')
-    conversation = conversation_store[session_id]
+    # session_id = session.get('session_id')
+    # conversation = conversation_store[session_id]
     question = request.json.get('question')
     if not question:
         return jsonify({'error': 'No question provided'}), 400
-    response = conversation({"question": question})
+    response = conversation.invoke({"question": question})
+    print(response)
     answer = response['answer']
     
     return jsonify({'answer': answer})
