@@ -11,13 +11,17 @@ from langchain_community.vectorstores.faiss import FAISS
 from langchain_community.llms.huggingface_endpoint import HuggingFaceEndpoint
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
-from transformers import pipeline
+
+from langchain_core.prompts import PromptTemplate
+from transformers import AutoModelForCausalLM, AutoTokenizer
+import sys
 
 app = Flask(__name__)
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SECRET_KEY'] = 'supersecretkey'
-Session(app)
+# app.config['SESSION_TYPE'] = 'filesystem'
+# app.config['SECRET_KEY'] = 'supersecretkey'
+# Session(app)
 conversation_store = {}
+
 
 # Configuration for file uploads
 # UPLOAD_FOLDER = 'uploads'
@@ -57,24 +61,40 @@ def get_text_chuncks(text):
 def make_vectore_store(chunks):
     embadiing = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     vector = FAISS.from_texts(texts=chunks, embedding=embadiing)
+    
     return vector
 
 def get_conversation(vector):
-    hf_model_id = "google/flan-t5-xxl"
+    hf_model_id = "google/flan-t5-xxl"    
     hf_endpoint_url = f"https://api-inference.huggingface.co/models/{hf_model_id}"
+
+    # Prompt
+    template = """You are an AI assistant your name is K2S to help the user to get answers Use the following pieces of context to answer the question at the end.
+    If you don’t know the answer, just say that you don’t know, don’t try to make up an answer.
+    Use three sentences maximum and keep the answer as concise as possible.
+    {context}
+    Question: {question}
+    Helpful Answer:"""
+
+    prompt = PromptTemplate(
+                            template=template,input_variables=["context", "question"])
     llm = HuggingFaceEndpoint(
         task="text2text-generation",
         endpoint_url=hf_endpoint_url,
     )
-    # llm = pipeline('text-generation', model='gpt2')
+
+    # question_generator_chain = LLMChain(llm=llm, prompt=prompt)
     memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True
                                       ,model_kwargs={"max_new_tokens": 200}, top_k=3)
+    # conversation = LLMChain(llm=llm, prompt=prompt, verbose=True, memory=memory)
     conversation =  ConversationalRetrievalChain.from_llm(
     llm=llm,
     memory=memory,
-    retriever=vector.as_retriever(), 
+    retriever=vector.as_retriever(search_type="similarity_score_threshold", search_kwargs={"score_threshold": 0.5, "k":2}), 
+    combine_docs_chain_kwargs={"prompt": prompt},  
     # return_source_documents=True
     )
+
     return conversation
 
 
@@ -109,8 +129,7 @@ def upload_file():
 
 @app.route('/ask', methods=['POST'])
 def ask_question():
-    # session_id = session.get('session_id')
-    # conversation = conversation_store[session_id]
+
     question = request.json.get('question')
     if not question:
         return jsonify({'error': 'No question provided'}), 400
@@ -122,6 +141,6 @@ def ask_question():
 
 if __name__ == '__main__':
     import os
-    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
     load_dotenv()
+    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
     app.run(host='0.0.0.0',port='5000',debug=True)
