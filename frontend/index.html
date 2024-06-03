@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>K2S</title>
+    <link rel="stylesheet" href="style/normalize.css" />
+    <link rel="stylesheet" href="style/style.css" />
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    /> -->
+  </head>
+  <body>
+    <div class="container">
+      <div class="logo-container">
+        <img src="images/logo-icon-01(2).svg" alt="K2S Logo" />
+      </div>
+      <form class="form-container" method="POST" action="login">
+        <img
+          class="img-header"
+          src="images/welcome back icon.svg"
+          alt="Welcome Back"
+        />
+        <h3>Log In</h3>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+          <div class="error-message" id="email-error"></div>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required />
+          <div class="error-message" id="password-error"></div>
+        </div>
+        <button class="btn" type="submit">Login</button>
+        <p class="join--btn">
+          New to
+          <img class="logo" src="/images/logo-icon-01(2).svg" alt="K2S" />?
+          <a class="join--link" href="#">Join us</a>
+        </p>
+      </form>
+    </div>
+    <script src="js/main.js"></script>
+  </body>
+</html>
