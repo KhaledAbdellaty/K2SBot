@@ -47,11 +47,23 @@ h1{
     background-attachment: fixed;
     margin-top: 0;
     position: relative;
- } 
+ }
+ .signup-container {
+   width: 100%;
+   height: 100vh;
+   background-image: url(../images/signup.jpg);
+   background-position: center;
+   background-size: cover;
+   background-attachment: fixed;
+   margin-top: 0;
+   position: relative;
+ }
  .img-header {
     width: 40%;
     margin-bottom: 60px;
  }
+
+   /* logo container for the login page */
  .logo-container {
     position:absolute;
     top: 30px;
@@ -61,8 +73,55 @@ h1{
     display: block;
     width: 250px;
     height: 250px;
-    /* transform: translateX(calc(100% - 200px)) translateY(calc(100% - 200px)); */
  }
+ 
+   /* logo container for the signup page */
+ .logo--container {
+   position:absolute;
+   bottom: 0px;
+   right: 60px;
+   margin-bottom: 0;
+   margin-left: 0;
+   display: block;
+   width: 330px;
+   height: 200px;
+
+}
+
+.lang {
+   display: flex;
+   align-items: center; 
+   position: absolute;
+   top: 0;
+   left: 10px;
+   padding: 10px; 
+}
+.lang p {
+   margin: 0; 
+    padding-right: 10px;
+    font-weight: 700;
+}
+.lang img {
+   max-width: 40px; 
+    height: auto;
+}
+.language {
+   display: flex;
+   align-items: center; 
+   position: absolute;
+   top: 0;
+   right: 50px;
+   padding: 10px; 
+}
+.language p {
+   margin: 0; 
+    padding-right: 10px;
+    font-weight: 700;
+}
+.language img {
+   max-width: 40px; 
+    height: auto;
+}
 
 
  /* input forms */
@@ -79,10 +138,10 @@ h1{
  }
  input {
     border: 1px solid #ccc;
-    border-radius: 15px;
+    border-radius: 25px;
     padding: 0.5rem 0.7rem;
-    width: 442.333px;
-    height: 65px;
+    width: 500.333px;
+    height: 75px;
  }
 
  .form-group {
@@ -93,10 +152,10 @@ h1{
  }
  .btn  {
     background-color: var(--color-primary);
-    width: 456.333px;
-    height: 75px;
-    border-radius: 17px;
-    margin-top: 1rem;
+    width: 520.333px;
+    height: 90px;
+    border-radius: 25px;
+    margin-top: 1.7rem;
     color: #fff;
  }
  .btn:hover {
@@ -131,59 +190,41 @@ input.invalid {
    border-color: red;
 }
 
-
-/* @media screen and (min-width: 768px) {
-    body {
-       Adjust background properties for mobile
-        background-size: contain;  Or adjust as needed
-    }
-       
-} */
-
-/* @media screen and (max-width: 1200px) {
-   .img-header {
-       width: 50%;
-   }
-
-   input {
-       width: 90%;
-   }
-
-   .btn {
-       width: 90%;
-   }
-}
-
+/* Media Queries */
 @media screen and (max-width: 768px) {
-   .img-header {
-       width: 60%;
+   html {
+       font-size: 55%; /* Smaller base font size for smaller screens */
    }
 
-   input {
-       width: 80%;
+   .form-container {
+       padding: 15px;
    }
 
    .btn {
-       width: 80%;
+       padding: 1rem;
+   }
+
+   .logo-container, .logo--container {
+       width: 200px;
+       height: 200px;
    }
 }
 
 @media screen and (max-width: 480px) {
-   .img-header {
-       width: 70%;
+   html {
+       font-size: 50%; /* Smaller base font size for very small screens */
    }
 
-   input {
-       width: 70%;
+   .form-container {
+       padding: 10px;
    }
 
    .btn {
-       width: 70%;
+       padding: 0.8rem;
    }
 
-   .container {
-       background-size: cover; Adjust background properties for mobile
-       background-position: top center;
-       background-attachment: scroll;
+   .logo-container, .logo--container {
+       width: 150px;
+       height: 150px;
    }
-} */
+}
